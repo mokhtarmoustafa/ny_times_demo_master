@@ -20,9 +20,8 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String","NY_TIMES_API_KEY",ny_times_api_key)
+        buildConfigField("String", "NY_TIMES_API_KEY", ny_times_api_key)
     }
-
 
 
     buildTypes {
@@ -34,6 +33,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        dataBinding = true
     }
 
     compileOptions {

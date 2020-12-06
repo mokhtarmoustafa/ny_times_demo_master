@@ -3,8 +3,10 @@ package com.task.nytimesdemo.ui.article
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.navigation.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +21,7 @@ import com.task.nytimesdemo.data.Article
 import com.task.nytimesdemo.databinding.ArticleRecyclerItemBinding
 
 
-class ArticleAdapter(private val listener: OnItemClickListener) :
+class ArticleAdapter :
     PagingDataAdapter<Article, ArticleAdapter.ArticleViewHolder>(ARTICLE_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
@@ -43,64 +45,27 @@ class ArticleAdapter(private val listener: OnItemClickListener) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    val item = getItem(position)
-                    if (item != null) {
-                        listener.onItemClick(item)
-                    }
-                }
+            binding.setClickListener {
+                navigateToArticleDetails(binding.article!!,it)
+
             }
         }
 
         fun bind(article: Article) {
             binding.apply {
-
-                Glide.with(itemView)
-                    .load( if (article.media.isNotEmpty())
-                        article.media[0].media_metadata[2].url
-                    else
-                        "")
-                    .error(R.drawable.ic_error)
-                    .circleCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.ic_error)
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            return false
-                        }
-
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            return false
-                        }
-                    })
-                    .into(image)
-
-                binding.tvTitle.text = article.title
-                binding.tvCreatedBy.text = article.byline
-                binding.tvSource.text = article.source
-                binding.llDate.date.text = article.published_date
+                binding.article = article
+                binding.llDate.setDate(article.published_date)
 
 
             }
         }
     }
 
-    interface OnItemClickListener {
-        fun onItemClick(article: Article)
+    private fun navigateToArticleDetails(article: Article, view: View) {
+        val action = ArticleFragmentDirections.actionArticleFragmentToArticleDetailFragment(article)
+        view.findNavController().navigate(action)
     }
+
 
     companion object {
         private val ARTICLE_COMPARATOR = object : DiffUtil.ItemCallback<Article>() {

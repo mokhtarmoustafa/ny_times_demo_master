@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.navigation.Navigation
@@ -32,6 +33,8 @@ class ArticleDetailFragment : Fragment(R.layout.fragment_article_detail) {
 
     //region Members
     private val args by navArgs<ArticleDetailFragmentArgs>()
+    private  var _binding: FragmentArticleDetailBinding?=null
+    private val binding  get() = _binding
     //endregion
 
     //region Events
@@ -45,59 +48,31 @@ class ArticleDetailFragment : Fragment(R.layout.fragment_article_detail) {
         requireActivity().onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        _binding = FragmentArticleDetailBinding.inflate(inflater, container, false)
+        return _binding!!.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding = FragmentArticleDetailBinding.bind(view)
-        binding.apply {
-            val article = args.article
+        val article = args.article
+        binding!!.article = article
 
-            toolbar.setNavigationOnClickListener { view ->
-                view.findNavController().navigateUp()
-            }
-
-
-
-            Glide.with(this@ArticleDetailFragment)
-                .load(article.media[0].media_metadata[2].url)
-                .centerCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .error(R.drawable.ic_error)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        createdBy.isVisible = true
-                        descriptionDes.isVisible = article != null
-                        return false
-                    }
-                })
-                .into(imageView)
-
-            Log.d("TAG", "onViewCreated: $article")
-            article.title.let {  titleDes.text=it}
-            article.abstract.let { descriptionDes.text=it }
-            article.byline.let{ createdBy.text=it}
-            article.source.let {  source.text=it }
-
-
-
-
+        binding!!.toolbar.setNavigationOnClickListener { view ->
+            view.findNavController().navigateUp()
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     //endregion

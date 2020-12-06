@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <data>
+        <variable
+            name="article"
+            type="com.task.nytimesdemo.data.Article" />
+        <variable
+            name="clickListener"
+            type="android.view.View.OnClickListener"/>
+
+
+    </data>
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
-    android:background="@color/color_white">
+    android:background="@color/color_white"
+    android:onClick="@{clickListener}">
 
     <ImageView
         android:id="@+id/image"
@@ -17,6 +31,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@mipmap/ic_launcher"
+        app:profileImage="@{article.media[0].media_metadata[2].url}"
+        app:isCircleCrop="@{true}"
       />
 
     <TextView
@@ -30,7 +46,8 @@
         android:layout_toRightOf="@+id/image"
         android:ellipsize="end"
         android:maxLines="2"
-        android:text="mokhtar "
+        tools:text="mokhtar "
+        android:text="@{ article.title}"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
 
@@ -46,8 +63,9 @@
         android:layout_toRightOf="@+id/image"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="mokhtar "
-        android:textSize="14sp" />
+        tools:text="mokhtar "
+        android:textSize="14sp"
+        android:text="@{ article.byline}"/>
 
     <TextView
         android:id="@+id/tvSource"
@@ -57,7 +75,9 @@
         android:layout_toEndOf="@+id/image"
         android:layout_toRightOf="@+id/image"
         android:maxLines="1"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        tools:text="@string/source"
+        android:text="@{article.source}"/>
 
     <include
         android:id="@+id/llDate"
@@ -80,3 +100,5 @@
         android:src="@drawable/ic_next" />
 
 </RelativeLayout>
+
+</layout>

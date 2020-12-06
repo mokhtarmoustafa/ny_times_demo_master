@@ -15,12 +15,13 @@ import com.task.nytimesdemo.databinding.FragmentArticleBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ArticleFragment : Fragment(R.layout.fragment_article),ArticleAdapter.OnItemClickListener {
+class ArticleFragment : Fragment(R.layout.fragment_article) {
 
     //region Members
     private val viewModel by viewModels<ArticleViewModel>()
     private var _binding: FragmentArticleBinding? = null
     private val binding get() = _binding!!
+    val adapter = ArticleAdapter()
     //endregion
 
     //region Events
@@ -29,7 +30,7 @@ class ArticleFragment : Fragment(R.layout.fragment_article),ArticleAdapter.OnIte
 
         _binding = FragmentArticleBinding.bind(view)
 
-        val adapter = ArticleAdapter(this)
+
 
         binding.apply {
             recyclerView.setHasFixedSize(true)
@@ -69,10 +70,6 @@ class ArticleFragment : Fragment(R.layout.fragment_article),ArticleAdapter.OnIte
     }
 
 
-    override fun onItemClick(article: Article) {
-        val action = ArticleFragmentDirections.actionArticleFragmentToArticleDetailFragment(article)
-        findNavController().navigate(action)
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
